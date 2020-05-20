@@ -1,13 +1,11 @@
-pub type RuntimeResult<T: Runtime> = Result<T::Value, T::Error>;
-
 pub trait Runtime {
     type Value: Default;
     type Constant;
     type Error: VmError;
 
-    fn add(&mut self, a: Self::Value, b: Self::Value) -> RuntimeResult<Self>;
-    fn sub(&mut self, a: Self::Value, b: Self::Value) -> RuntimeResult<Self>;
-    fn constant(&mut self, constant: &Self::Constant) -> RuntimeResult<Self>;
+    fn add(&mut self, a: Self::Value, b: Self::Value) -> Result<Self::Value, Self::Error>;
+    fn sub(&mut self, a: Self::Value, b: Self::Value) -> Result<Self::Value, Self::Error>;
+    fn constant(&mut self, constant: &Self::Constant) -> Result<Self::Value, Self::Error>;
 }
 
 #[repr(u8)]

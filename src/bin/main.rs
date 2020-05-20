@@ -1,4 +1,4 @@
-use genvm::{Vm, VmError, Runtime, RuntimeResult, Opcode};
+use genvm::{Vm, VmError, Runtime, Opcode};
 use std::fmt;
 
 struct TestRuntime;
@@ -42,20 +42,20 @@ impl Runtime for TestRuntime {
     type Constant = TestConstant;
     type Error = TestError;
 
-    fn constant(&mut self, constant: &Self::Constant) -> RuntimeResult<Self> {
+    fn constant(&mut self, constant: &Self::Constant) -> Result<Self::Value, Self::Error> {
         Ok(match constant {
             TestConstant::Int(i) => TestValue::Int(*i),
         })
     }
 
-    fn add(&mut self, a: Self::Value, b: Self::Value) -> RuntimeResult<Self> {
+    fn add(&mut self, a: Self::Value, b: Self::Value) -> Result<Self::Value, Self::Error> {
         match (a, b) {
             (TestValue::Int(a), TestValue::Int(b)) => Ok(TestValue::Int(a + b)),
             _ => Err(Self::Error::type_error()),
         }
     }
 
-    fn sub(&mut self, a: Self::Value, b: Self::Value) -> RuntimeResult<Self> {
+    fn sub(&mut self, a: Self::Value, b: Self::Value) -> Result<Self::Value, Self::Error> {
         match (a, b) {
             (TestValue::Int(a), TestValue::Int(b)) => Ok(TestValue::Int(a - b)),
             _ => Err(Self::Error::type_error()),
