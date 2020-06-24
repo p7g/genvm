@@ -19,21 +19,23 @@ enum TestConstant {
     Int(i64),
 }
 
-struct TestError(&'static str);
+enum TestError {
+    StackUnderflow,
+    TypeError,
+}
 
 impl VmError for TestError {
     fn stack_underflow() -> Self {
-        TestError("stack underflow")
-    }
-
-    fn type_error() -> Self {
-        TestError("type error")
+        TestError::StackUnderflow
     }
 }
 
 impl fmt::Display for TestError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.0)
+        write!(f, "{}", match self {
+            Self::StackUnderflow => "stack underflow",
+            Self::TypeError => "type error",
+        })
     }
 }
 
@@ -51,14 +53,14 @@ impl Runtime for TestRuntime {
     fn add(&mut self, a: Self::Value, b: Self::Value) -> Result<Self::Value, Self::Error> {
         match (a, b) {
             (TestValue::Int(a), TestValue::Int(b)) => Ok(TestValue::Int(a + b)),
-            _ => Err(Self::Error::type_error()),
+            _ => Err(Self::Error::TypeError),
         }
     }
 
     fn sub(&mut self, a: Self::Value, b: Self::Value) -> Result<Self::Value, Self::Error> {
         match (a, b) {
             (TestValue::Int(a), TestValue::Int(b)) => Ok(TestValue::Int(a - b)),
-            _ => Err(Self::Error::type_error()),
+            _ => Err(Self::Error::TypeError),
         }
     }
 }

@@ -18,7 +18,6 @@ pub enum Opcode {
 
 pub trait VmError {
     fn stack_underflow() -> Self;
-    fn type_error() -> Self;
 }
 
 pub struct Vm<'a, T: Runtime> {
